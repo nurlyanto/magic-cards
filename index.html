@@ -16,15 +16,46 @@
       background: linear-gradient(180deg, #e0f2fe 0%, #fce7f3 55%, #fef9c3 100%);
       padding: 16px;
     }
-    .wrap { max-width: 720px; margin: 0 auto; }
-    header { text-align: center; margin-bottom: 14px; }
+    .wrap { max-width: 720px; margin: 0 auto; position: relative; }
+    header { text-align: center; margin-bottom: 14px; position: relative; }
+    .lang-switch {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      gap: 6px;
+      z-index: 2;
+    }
+    .lang-btn {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border: 3px solid transparent;
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      box-shadow: 0 2px 0 rgba(0,0,0,.08);
+    }
+    .lang-btn img, .lang-btn svg {
+      width: 28px;
+      height: 28px;
+      display: block;
+      border-radius: 50%;
+    }
+    .lang-btn.active {
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 2px #fff, 0 2px 0 rgba(0,0,0,.08);
+    }
     h1 {
       font-family: Fredoka, sans-serif;
       font-size: clamp(28px, 7vw, 46px);
       color: #7c2d12;
       text-shadow: 2px 2px 0 #fff;
     }
-    .lead { font-weight: 800; margin-top: 4px; }
+    .lead { font-weight: 800; margin-top: 4px; padding: 0 48px; }
     .panel {
       background: rgba(255,253,248,.94);
       border: 5px solid #fff;
@@ -130,20 +161,40 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>Kartu Ajaib</h1>
-      <p class="lead">Kelihatannya sulap, tapi ini matematika!</p>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" class="lang-btn active" id="lang-id" data-lang="id" title="Bahasa Indonesia" aria-label="Bahasa Indonesia">
+          <svg viewBox="0 0 28 28" aria-hidden="true">
+            <circle cx="14" cy="14" r="14" fill="#fff"/>
+            <path d="M0 14h28v10.5A14 14 0 0 1 14 28 14 14 0 0 1 0 24.5V14z" fill="#ce1126"/>
+            <path d="M14 0A14 14 0 0 0 0 14h28A14 14 0 0 0 14 0z" fill="#fff"/>
+          </svg>
+        </button>
+        <button type="button" class="lang-btn" id="lang-en" data-lang="en" title="English" aria-label="English">
+          <svg viewBox="0 0 60 30" aria-hidden="true">
+            <clipPath id="s"><path d="M0,0 v30 h60 v-30 z"/></clipPath>
+            <clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath>
+            <g clip-path="url(#s)">
+              <path d="M0,0 v30 h60 v-30 z" fill="#012169"/>
+              <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+              <path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#C8102E" stroke-width="4"/>
+              <path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/>
+              <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
+            </g>
+          </svg>
+        </button>
+      </div>
+      <h1 id="t-title">Kartu Ajaib</h1>
+      <p class="lead" id="t-lead">Kelihatannya sulap, tapi ini matematika!</p>
     </header>
-
     <main class="panel">
       <section id="step-name" class="step active">
-        <label for="student-name">Siapa namamu?</label>
+        <label for="student-name" id="t-name-label">Siapa namamu?</label>
         <input id="student-name" type="text" maxlength="24" placeholder="Contoh: Heni" />
-        <p class="hint">Pikirkan satu angka dari 1 sampai 31. Jangan beri tahu gurunya dulu.</p>
+        <p class="hint" id="t-hint">Pikirkan satu angka dari 1 sampai 31. Jangan beri tahu gurunya dulu.</p>
         <div class="actions">
           <button class="btn-primary" id="start-btn">Mulai</button>
         </div>
       </section>
-
       <section id="step-pick" class="step">
         <p class="progress" id="progress">Kartu 1 dari 5</p>
         <p class="ask" id="ask-text">Hai! Apakah angkamu ada di kartu ini?</p>
@@ -153,34 +204,18 @@
           <button class="btn-yes" id="btn-yes">Ada</button>
         </div>
       </section>
-
       <section id="step-result" class="step">
         <p class="guess-name" id="result-line"></p>
         <div class="guess" id="guess-number">?</div>
         <div class="math-box">
-          <h2>Rahasianya gampang</h2>
+          <h2 id="t-secret-title">Rahasianya gampang</h2>
           <p id="math-intro"></p>
-          <div class="easy">
-            Tiap kartu punya “nilai kartu” di lingkaran atas:<br>
-            1 , 2 , 4 , 8 , dan 16.
-          </div>
-          <p>
-            Kalau kamu bilang <b>Ada</b>, nilai kartunya dihitung.<br>
-            Kalau kamu bilang <b>Tidak ada</b>, nilai kartunya dilewati.
-          </p>
+          <div class="easy" id="t-easy"></div>
+          <p id="t-rule"></p>
           <div class="sum-line" id="sum-line"></div>
-          <p>
-            Contoh: kartu 8 “Ada” dan kartu 1 “Ada” → 8 + 1 = 9.
-            Itu saja. Tidak perlu menghafal semua angka di dalam kartu.
-          </p>
-          <p>
-            Nama cara ini: <b>sistem bilangan biner</b>.
-            Komputer juga bekerja seperti ini: nyala = 1, mati = 0.
-          </p>
-          <div class="cheer">
-            Jadi ini bukan sihir. Ini kehebatan matematika.
-            Kalau anak paham ini, mereka sedang belajar cara kerja komputer juga.
-          </div>
+          <p id="t-example"></p>
+          <p id="t-binary"></p>
+          <div class="cheer" id="t-cheer"></div>
         </div>
         <div class="actions">
           <button class="btn-primary" id="play-again">Siswa berikutnya</button>
@@ -189,8 +224,63 @@
       </section>
     </main>
   </div>
-
   <script>
+    const I18N = {
+      id: {
+        titlePage: "Kartu Ajaib Matematika",
+        title: "Kartu Ajaib",
+        lead: "Kelihatannya sulap, tapi ini matematika!",
+        nameLabel: "Siapa namamu?",
+        placeholder: "Contoh: Heni",
+        hint: "Pikirkan satu angka dari 1 sampai 31. Jangan beri tahu gurunya dulu.",
+        start: "Mulai",
+        progress: (i, n) => `Kartu ${i} dari ${n}`,
+        ask: (name) => `Hai, ${name}! Apakah angkamu ada di kartu ini?`,
+        no: "Tidak ada",
+        yes: "Ada",
+        result: (name) => `Angka yang dipikirkan <b>${name}</b> adalah`,
+        secretTitle: "Rahasianya gampang",
+        introYes: (name, cards) => `${name} menjawab “Ada” pada kartu ${cards}.`,
+        introNo: (name) => `${name} menjawab “Tidak ada” di semua kartu.`,
+        easy: "Tiap kartu punya “nilai kartu” di lingkaran atas:<br>1 , 2 , 4 , 8 , dan 16.",
+        rule: "Kalau kamu bilang <b>Ada</b>, nilai kartunya dihitung.<br>Kalau kamu bilang <b>Tidak ada</b>, nilai kartunya dilewati.",
+        sumEmpty: "Tidak ada kartu yang dijumlahkan.",
+        example: "Contoh: kartu 8 “Ada” dan kartu 1 “Ada” → 8 + 1 = 9. Itu saja. Tidak perlu menghafal semua angka di dalam kartu.",
+        binary: "Nama cara ini: <b>sistem bilangan biner</b>. Komputer juga bekerja seperti ini: nyala = 1, mati = 0.",
+        cheer: "Jadi ini bukan sihir. Ini kehebatan matematika. Kalau anak paham ini, mereka sedang belajar cara kerja komputer juga.",
+        next: "Siswa berikutnya",
+        changeName: "Ganti nama"
+      },
+      en: {
+        titlePage: "Magic Math Cards",
+        title: "Magic Cards",
+        lead: "It looks like magic, but it's math!",
+        nameLabel: "What's your name?",
+        placeholder: "Example: Heni",
+        hint: "Think of a number from 1 to 31. Don't tell the teacher yet.",
+        start: "Start",
+        progress: (i, n) => `Card ${i} of ${n}`,
+        ask: (name) => `Hi, ${name}! Is your number on this card?`,
+        no: "No",
+        yes: "Yes",
+        result: (name) => `The number <b>${name}</b> thought of is`,
+        secretTitle: "The secret is simple",
+        introYes: (name, cards) => `${name} answered “Yes” on card${cards.includes(",") ? "s" : ""} ${cards}.`,
+        introNo: (name) => `${name} answered “No” on every card.`,
+        easy: "Each card has a “card value” in the circle at the top:<br>1 , 2 , 4 , 8 , and 16.",
+        rule: "If you say <b>Yes</b>, that card’s value is added.<br>If you say <b>No</b>, that card’s value is skipped.",
+        sumEmpty: "No cards were added.",
+        example: "Example: card 8 “Yes” and card 1 “Yes” → 8 + 1 = 9. That’s all. You don’t need to memorize every number on the cards.",
+        binary: "This method is called the <b>binary number system</b>. Computers work the same way: on = 1, off = 0.",
+        cheer: "So this isn’t magic. It’s the power of math. When kids understand this, they’re also learning how computers work.",
+        next: "Next student",
+        changeName: "Change name"
+      }
+    };
+
+    let lang = localStorage.getItem("kam-lang") || "id";
+    const t = () => I18N[lang];
+
     const CARDS = [
       { value: 1, color: "#fecdd3", numbers: [1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31] },
       { value: 2, color: "#fde68a", numbers: [2,3,6,7,10,11,14,15,18,19,22,23,26,27,30,31] },
@@ -198,12 +288,10 @@
       { value: 8, color: "#bfdbfe", numbers: [8,9,10,11,12,13,14,15,24,25,26,27,28,29,30,31] },
       { value: 16, color: "#e9d5ff", numbers: [16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31] }
     ];
-
     let studentName = "";
     let index = 0;
     let total = 0;
     const picked = [];
-
     const stepName = document.getElementById("step-name");
     const stepPick = document.getElementById("step-pick");
     const stepResult = document.getElementById("step-result");
@@ -220,15 +308,60 @@
       return cleaned.split(" ").map((p) => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join(" ");
     }
 
+    function applyStaticText() {
+      const i = t();
+      document.documentElement.lang = lang;
+      document.title = i.titlePage;
+      document.getElementById("t-title").textContent = i.title;
+      document.getElementById("t-lead").textContent = i.lead;
+      document.getElementById("t-name-label").textContent = i.nameLabel;
+      nameInput.placeholder = i.placeholder;
+      document.getElementById("t-hint").textContent = i.hint;
+      document.getElementById("start-btn").textContent = i.start;
+      document.getElementById("btn-no").textContent = i.no;
+      document.getElementById("btn-yes").textContent = i.yes;
+      document.getElementById("t-secret-title").textContent = i.secretTitle;
+      document.getElementById("t-easy").innerHTML = i.easy;
+      document.getElementById("t-rule").innerHTML = i.rule;
+      document.getElementById("t-example").innerHTML = i.example;
+      document.getElementById("t-binary").innerHTML = i.binary;
+      document.getElementById("t-cheer").innerHTML = i.cheer;
+      document.getElementById("play-again").textContent = i.next;
+      document.getElementById("change-name").textContent = i.changeName;
+      document.getElementById("lang-id").classList.toggle("active", lang === "id");
+      document.getElementById("lang-en").classList.toggle("active", lang === "en");
+    }
+
     function renderCurrentCard() {
       const card = CARDS[index];
-      document.getElementById("progress").textContent = `Kartu ${index + 1} dari ${CARDS.length}`;
-      document.getElementById("ask-text").textContent = `Hai, ${studentName}! Apakah angkamu ada di kartu ini?`;
+      const i = t();
+      document.getElementById("progress").textContent = i.progress(index + 1, CARDS.length);
+      document.getElementById("ask-text").textContent = i.ask(studentName);
       document.getElementById("one-card").style.background = card.color;
       document.getElementById("one-card").innerHTML = `
         <div class="badge">${card.value}</div>
         <div class="nums">${card.numbers.map((n) => `<span>${n}</span>`).join("")}</div>
       `;
+    }
+
+    function renderResultText() {
+      if (!studentName && !document.getElementById("step-result").classList.contains("active")) return;
+      if (!document.getElementById("step-result").classList.contains("active")) return;
+      const i = t();
+      document.getElementById("result-line").innerHTML = i.result(studentName);
+      document.getElementById("guess-number").textContent = total || "?";
+      document.getElementById("math-intro").innerHTML =
+        total ? i.introYes(studentName, picked.join(", ")) : i.introNo(studentName);
+      document.getElementById("sum-line").textContent =
+        picked.length ? `${picked.join(" + ")} = ${total}` : i.sumEmpty;
+    }
+
+    function setLang(next) {
+      lang = next;
+      localStorage.setItem("kam-lang", lang);
+      applyStaticText();
+      if (stepPick.classList.contains("active")) renderCurrentCard();
+      if (stepResult.classList.contains("active")) renderResultText();
     }
 
     function startGame() {
@@ -252,21 +385,9 @@
       if (index < CARDS.length) {
         renderCurrentCard();
       } else {
-        finish();
+        show(stepResult);
+        renderResultText();
       }
-    }
-
-    function finish() {
-      document.getElementById("result-line").innerHTML =
-        `Angka yang dipikirkan <b>${studentName}</b> adalah`;
-      document.getElementById("guess-number").textContent = total || "?";
-      document.getElementById("math-intro").innerHTML =
-        total
-          ? `${studentName} menjawab “Ada” pada kartu ${picked.join(", ")}.`
-          : `${studentName} menjawab “Tidak ada” di semua kartu.`;
-      document.getElementById("sum-line").textContent =
-        picked.length ? `${picked.join(" + ")} = ${total}` : "Tidak ada kartu yang dijumlahkan.";
-      show(stepResult);
     }
 
     document.getElementById("start-btn").addEventListener("click", startGame);
@@ -283,6 +404,10 @@
       show(stepName);
       nameInput.focus();
     });
+    document.getElementById("lang-id").addEventListener("click", () => setLang("id"));
+    document.getElementById("lang-en").addEventListener("click", () => setLang("en"));
+
+    applyStaticText();
   </script>
 </body>
 </html>
