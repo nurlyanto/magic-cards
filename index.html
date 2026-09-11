@@ -218,8 +218,7 @@
           <div class="cheer" id="t-cheer"></div>
         </div>
         <div class="actions">
-          <button class="btn-primary" id="play-again">Siswa berikutnya</button>
-          <button class="btn-ghost" id="change-name">Ganti nama</button>
+          <button class="btn-primary" id="play-again">Mulai lagi</button>
         </div>
       </section>
     </main>
@@ -248,8 +247,7 @@
         example: "Contoh: kartu 8 “Ada” dan kartu 1 “Ada” → 8 + 1 = 9. Itu saja. Tidak perlu menghafal semua angka di dalam kartu.",
         binary: "Nama cara ini: <b>sistem bilangan biner</b>. Komputer juga bekerja seperti ini: nyala = 1, mati = 0.",
         cheer: "Jadi ini bukan sihir. Ini kehebatan matematika. Kalau anak paham ini, mereka sedang belajar cara kerja komputer juga.",
-        next: "Siswa berikutnya",
-        changeName: "Ganti nama"
+        again: "Mulai lagi"
       },
       en: {
         titlePage: "Magic Math Cards",
@@ -273,8 +271,7 @@
         example: "Example: card 8 “Yes” and card 1 “Yes” → 8 + 1 = 9. That’s all. You don’t need to memorize every number on the cards.",
         binary: "This method is called the <b>binary number system</b>. Computers work the same way: on = 1, off = 0.",
         cheer: "So this isn’t magic. It’s the power of math. When kids understand this, they’re also learning how computers work.",
-        next: "Next student",
-        changeName: "Change name"
+        again: "Play again"
       }
     };
 
@@ -326,8 +323,7 @@
       document.getElementById("t-example").innerHTML = i.example;
       document.getElementById("t-binary").innerHTML = i.binary;
       document.getElementById("t-cheer").innerHTML = i.cheer;
-      document.getElementById("play-again").textContent = i.next;
-      document.getElementById("change-name").textContent = i.changeName;
+      document.getElementById("play-again").textContent = i.again;
       document.getElementById("lang-id").classList.toggle("active", lang === "id");
       document.getElementById("lang-en").classList.toggle("active", lang === "en");
     }
@@ -395,11 +391,6 @@
     document.getElementById("btn-yes").addEventListener("click", () => answer(true));
     document.getElementById("btn-no").addEventListener("click", () => answer(false));
     document.getElementById("play-again").addEventListener("click", () => {
-      nameInput.value = "";
-      show(stepName);
-      nameInput.focus();
-    });
-    document.getElementById("change-name").addEventListener("click", () => {
       nameInput.value = studentName;
       show(stepName);
       nameInput.focus();
